@@ -1,0 +1,26 @@
+{
+  "name": "mini-webpack",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "<!--  * @Author: Sunny  * @Date: 2022-11-08 00:10:23  * @LastEditors: Suuny  * @LastEditTime: 2022-11-08 00:18:56  * @Description:   * @FilePath: /mini-webpack/readme.md --> import 由 esm 模块化规范决定的",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "-": "0.0.1",
+    "@babel/core": "^7.20.2",
+    "@babel/parser": "^7.20.3",
+    "@babel/traverse": "^7.20.1",
+    "D": "^1.0.0",
+    "babel-preset-env": "^1.7.0",
+    "ejs": "^3.1.8"
+  },
+  "devDependencies": {}
+}
