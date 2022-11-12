@@ -1,11 +1,3 @@
-/*
- * @Author: Sunny
- * @Date: 2022-11-08 00:18:27
- * @LastEditors: Suuny
- * @LastEditTime: 2022-11-10 22:52:38
- * @Description: 
- * @FilePath: /mini-webpack/index.js
- */
 
 // 书写我们实际的逻辑
 
@@ -16,17 +8,56 @@ import parser from '@babel/parser' // dom -> ast
 import traverse from '@babel/traverse' // 遍历 ast
 import ejs from 'ejs'
 import { transformFromAst } from "@babel/core" // 转换代码   从 esm 转化为 非JS
+import { jsonLoader } from './jsonLoader.js'
 let id = 0;
 
-console.log(traverse)
+// webpack 配置
+const webpackConfig = {
+    module: {
+        rules: [
+            {
+                test: /\.json/,
+                // use: jsonLoader
+                use: [jsonLoader]
+            }
+        ]
+    }
+}
+
+// console.log(traverse)
 function createAsset(filePath) {
     // 1. 获取文件内容
 
     // const source = fs.readFileSync('./example/main.js', {
-    const source = fs.readFileSync(filePath, {
+    let source = fs.readFileSync(filePath, {
     // const source = fs.readFileSync('/Users/cmh/Desktop/selfProject/mini-webpack/example/foo.js', {
         encoding: "utf-8"
     })
+
+    
+    // initLoader   json -> js
+    const loaders = webpackConfig.module.rules;
+    // 给 loader 添加依赖的这个函数
+    const loaderContext = {
+        addDeps (dep) {
+            console.log('addDeps', dep)
+        }
+    }
+
+    loaders.forEach(({test, use}) => {
+        // console.log("test.test(filePath)", test.test(filePath))
+        if(test.test(filePath)) {
+            // source =  use(source);
+            if(Array.isArray(use)) {
+                use.forEach((fn) => {
+                    // source = fn(source)
+                    source = fn.call(loaderContext, source)
+                    console.log('转化为后的 json内容 ----> ', source)
+                })
+            }
+        }
+    })
+
 
 
     // 2. 获取依赖关系
@@ -64,7 +95,7 @@ function createGraph () {
     const queue = [mainAsset];
     for(const asset of queue) {
         asset.deps.forEach((relativePath) => {
-            const child = createAsset(path.resolve('./example', relativePath) + '.js')
+            const child = createAsset(path.resolve('./example', relativePath))
             asset.mapping[relativePath] = child.id;
             queue.push(child)
         });
@@ -73,7 +104,7 @@ function createGraph () {
     return queue
 }
 const graph = createGraph()
-console.log("graph", graph)
+// console.log("graph", graph)
 
 
 function build(graph) {
@@ -81,7 +112,7 @@ function build(graph) {
         encoding: "utf-8"
     })
     const data = graph.map((asset) => {
-        console.log('asset', asset)
+        // console.log('asset', asset)
         const {id, code, mapping} = asset;
         return {
             id,

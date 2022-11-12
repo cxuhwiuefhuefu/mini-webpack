@@ -2,7 +2,7 @@
  * @Author: Sunny
  * @Date: 2022-11-08 00:10:23
  * @LastEditors: Suuny
- * @LastEditTime: 2022-11-10 23:32:05
+ * @LastEditTime: 2022-11-12 18:02:58
  * @Description: 
  * @FilePath: /mini-webpack/readme.md
 -->
@@ -67,3 +67,17 @@ esm规范告诉我们 import 只能在顶层作用域里面
 
 babel 只认识 js 不认识 json 所以报错   需要 用到 json
 引入 loader 把非 js 文件转化为 js 文件  再次执行
+
+
+
+
+推荐看英文文档
+中文文档不更新及时
+```js
+import { getOptions } from 'loader-util'
+
+const options = getOptions(this); // 被废弃掉
+```
+
+
+webpack loader 会把 loader 

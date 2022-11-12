@@ -27,22 +27,14 @@
         "0": [function (require, module, exports) {
             "use strict";
 
-var _foo = require("./foo");
-/*
- * @Author: Sunny
- * @Date: 2022-11-08 00:09:14
- * @LastEditors: Suuny
- * @LastEditTime: 2022-11-11 10:43:24
- * @Description: 
- * @FilePath: /mini-webpack/example/main.js
- */
-
-// import user from '/user.json'
-
-// console.log(user)
+var _foo = require("./foo.js");
+var _user = require("./user.json");
+var _user2 = _interopRequireDefault(_user);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+console.log("user", _user2.default);
 (0, _foo.foo)();
 console.log('mian.js'); 
-        }, {"./foo":1}],  
+        }, {"./foo.js":1,"./user.json":2}],  
     
         "1": [function (require, module, exports) {
             "use strict";
@@ -54,6 +46,15 @@ exports.foo = foo;
 function foo() {
   console.log('foo');
 } 
+        }, {}],  
+    
+        "2": [function (require, module, exports) {
+            "use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = "{\n    \"name\": \"sunny\",\n    \"age\": 18\n}"; 
         }, {}],  
     
 })
