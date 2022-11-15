@@ -9,6 +9,8 @@ import traverse from '@babel/traverse' // 遍历 ast
 import ejs from 'ejs'
 import { transformFromAst } from "@babel/core" // 转换代码   从 esm 转化为 非JS
 import { jsonLoader } from './jsonLoader.js'
+import { ChangeOutputPath } from "./changeOutputPath.js"
+import { SyncHook } from 'tapable'
 let id = 0;
 
 // webpack 配置
@@ -21,7 +23,13 @@ const webpackConfig = {
                 use: [jsonLoader]
             }
         ]
-    }
+    },
+    // 初始化插件
+    plugins: [new ChangeOutputPath()]
+}
+
+const hooks = {
+    emitFile: new SyncHook(["context"]) // 同步 
 }
 
 // console.log(traverse)
@@ -103,6 +111,17 @@ function createGraph () {
 
     return queue
 }
+
+
+function initPlugins () {
+    const plugins = webpackConfig.plugins;
+
+    plugins.forEach((plugin) => {
+        plugin.apply(hooks)
+    })
+}
+initPlugins();
+
 const graph = createGraph()
 // console.log("graph", graph)
 
@@ -122,6 +141,17 @@ function build(graph) {
     })
 
     const code = ejs.render(template, { data })
-    fs.writeFileSync('./dist/bundle.js', code)
+
+
+    let outputPath = "./dist/bundle.js";
+    const context = {
+        changeOutputPath(path) {
+            outputPath = path;
+        }
+    }
+    hooks.emitFile.call(context); // hooks 发出对应的事件
+
+
+    fs.writeFileSync(outputPath, code)
 }
 build(graph)
